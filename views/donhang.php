@@ -121,7 +121,8 @@
                                         <strong><a href="#"></a></strong>
                                     </div>
                                     <div class="col-2">
-                                        <strong>Tiền phải trả: <strong><?php echo number_format($tong, 0, ',', '.'); ?> VNĐ</strong></strong>
+                                        <strong>Tiền phải trả: <strong ><?php echo number_format($tong, 0, ',', '.'); ?> VNĐ</strong></strong>
+                                        <input type="hidden" name="tongtien" value="<?php echo $tong ?>">
                                     </div>
                                 </div>
                                 <div class="payment-method">
@@ -133,10 +134,10 @@
                                     </div>
                                     <div class="pay-top sin-payment">
                                         <input type="radio" name="pttt" value="2">
-                                        <label for="payment-method-2">Thanh toán Chuyển khoản</label>
+                                        <label for="payment-method-2" >Thanh toán bằng vnpay</label>
                                         <div class="payment-box payment_method_bacs">
-                                        <h4 class="span1">Ghi rõ nội dung: Mã đơn hàng-Email-SĐT</h4>
-                                            <img src="upload/thanh_toan/img1.jpg" alt="" style="height: 400px; width:200px;">
+                                        <!-- <h4 class="span1">Ghi rõ nội dung: Mã đơn hàng-Email-SĐT</h4> -->
+                                            <!-- <img src="upload/thanh_toan/img1.jpg" alt="" style="height: 400px; width:200px;"> -->
                                         </div>
                                     </div>
                                     

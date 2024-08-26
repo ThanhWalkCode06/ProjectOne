@@ -13,6 +13,9 @@ include "model/blog.php";
 include "model/donhang.php";
 include "model/trang_thai.php";
 include "model/donhang_detail.php";
+// include_once "views/vnpay/vnpay.php";
+
+
 $list_user = loadAll_user();
 $list_top = load_sptop();
 $listsanpham = load_all();
@@ -284,9 +287,12 @@ switch($act){
         case "thanhtoan" :
             $error_thanhtoan = "";
             if((isset($_POST['thanhtoan']))&&($_POST['thanhtoan'])){
-                
+                $tongtien = $_POST['tongtien'];
+                // echo "<pre>";
+                // print_r($_SESSION['giohang']);
+                // echo "</pre>";
                 if (isset($_SESSION['user']) && isset($_SESSION['id'])) {
-                    $iduser = $_SESSION['id'];
+                    $_SESSION['iduser'] = $_SESSION['id'];
                 }
                 if(empty($_POST['pttt'])){
                     $error_thanhtoan = "Bạn phải chọn 1 phương thức, mới có thể thanh toán";
@@ -300,31 +306,43 @@ switch($act){
                     $error_thanhtoan = "Không được để trống họ tên";
                 }
                 else{
-                    $ten_nguoi_dung=$_POST['ten_nguoi_dung'];
-                    $dia_chi=$_POST['dia_chi'];
-                    $email=$_POST['email'];
-                    $so_dien_thoai=$_POST['so_dien_thoai'];
-                    $pttt=$_POST['pttt'];
-                    $madh="CARD".rand(0,999999);
-                    $ngaydathang = date('h:i:sa d/m/Y');
+                    $_SESSION['ten_nguoi_dung']=$_POST['ten_nguoi_dung'];
+                    $_SESSION['dia_chi']=$_POST['dia_chi'];
+                    $_SESSION['email']=$_POST['email'];
+                    $_SESSION['so_dien_thoai']=$_POST['so_dien_thoai'];
+                    $_SESSION['pttt']=$_POST['pttt'];
+                    $_SESSION['madh']="CARD".rand(0,999999);
+                    $_SESSION['ngaydat'] = date('h:i:sa d/m/Y');
                     //tạo đơn hàng
                     //và trả về 1 id đơn hàng
-                    $id_dh=taodonhang($iduser,$madh,$pttt,$ten_nguoi_dung,$dia_chi,$email,$so_dien_thoai,$ngaydathang);
+                    if($_SESSION['pttt'] == 2){
+                    include "views/vnpay/vnpay.php" ; 
+                    // include "views/vnpay/returnPayment.php";    
+                    }else{
+                    $id_dh=taodonhang($_SESSION['iduser'],$_SESSION['madh'],$_SESSION['pttt'],$_SESSION['ten_nguoi_dung'],$_SESSION['dia_chi'],$_SESSION['email'],$_SESSION['so_dien_thoai'], $_SESSION['ngaydat']);
+                    
                     if(isset($_SESSION['giohang'])){
                         foreach ($_SESSION['giohang'] as $item) {
                         taodonhang_detail($item['0'],$id_dh,$item['4'],$item['3']);
                     }
                     $error_thanhtoan = "Mua hàng thành công ,cảm ơn quý khách đã mua hàng của chúng tôi";
-                    
+                    }
                     
                     if (isset($_SESSION['giohang'])) {
                         unset($_SESSION['giohang']);
                     }
+                    include "views/donhang.php";
                 }
                 }
             }
-    
-            include "views/donhang.php";  
+      
+            break;
+
+        case "returnPayment" :
+            $vnpayData = [];
+            include "views/vnpay/vnpay.php"; 
+            $vnpayData['url'] = $vnp_Url;
+            include "views/vnpay/returnPayment.php";  
             break;
 
             // acc
